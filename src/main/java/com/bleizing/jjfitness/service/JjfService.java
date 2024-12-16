@@ -65,7 +65,7 @@ public class JjfService {
 						++countRetry;
 						log.info("countRetry = " + countRetry);
 						
-						long timeDiff = getMinutesTimeDiff(classMap.get(request.getWoName()));
+						long timeDiff = getMinutesTimeDiff(getClassMap(request.getWoName()));
 						if (timeDiff <= minutesLessThan) {
 							interval = intervalTime;
 							doProcess = true;
@@ -293,6 +293,24 @@ public class JjfService {
 		classMap = new HashMap<>();
 		classMap.put("muaythai", "12:00");
 		classMap.put("spinning", "21:00");
+	}
+	
+	private String getClassMap(String woName) {
+		String value = "21:00";
+		
+		if (woName != null && !woName.equals("")) {
+			if (classMap != null && classMap.size() > 0) {
+				value = classMap.get(woName);
+				
+				log.info("Using time from classmap");
+			} else {
+				log.info("Using default time");
+			}
+		} else {
+			log.info("Using default time");
+		}
+		
+		return value;
 	}
 	
 	private long getMinutesTimeDiff(String timeCompare) {
