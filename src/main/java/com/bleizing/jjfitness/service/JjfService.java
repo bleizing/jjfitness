@@ -82,7 +82,7 @@ public class JjfService {
 							checkLogin(cookie);
 							menu(request.getWoName());
 							book();
-							bookCancel();
+//							bookCancel();
 						}
 						
 						Thread.sleep(interval);
