@@ -33,7 +33,7 @@ public class WarController {
 		jjfService.warJjf(WarJjfRequest.builder()
 				.username("dimasz_97@gmail.com")
 				.password("1693484551")
-				.woName("spinning")
+				.woName("muaythai")
 				.build());
 	}
 }

@@ -1,8 +1,5 @@
 package com.bleizing.jjfitness.service;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +15,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.bleizing.jjfitness.dto.request.WarJjfRequest;
+import com.bleizing.jjfitness.util.DateUtil;
+import com.bleizing.jjfitness.util.TimeUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -65,7 +64,7 @@ public class JjfService {
 						++countRetry;
 						log.info("countRetry = " + countRetry);
 						
-						long timeDiff = getMinutesTimeDiff(getClassMap(request.getWoName()));
+						long timeDiff = TimeUtil.getMinutesTimeDiff(getClassMap(request.getWoName()));
 						if (timeDiff <= minutesLessThan) {
 							interval = intervalTime;
 							doProcess = true;
@@ -83,7 +82,7 @@ public class JjfService {
 							checkLogin(cookie);
 							menu(request.getWoName());
 							book();
-//							bookCancel();
+							bookCancel();
 						}
 						
 						Thread.sleep(interval);
@@ -189,11 +188,11 @@ public class JjfService {
 					if (!tr.contains("<td>0</td>")) {
 						log.info("Class has quota");
 						
-						String time = tr.split("<td>")[2];
-						time = time.split("</td>")[0];
-						time = time.split(" ")[2];
+						String tanggal = tr.split("<td>")[2];
+						tanggal = tanggal.split("</td>")[0];
+						tanggal = tanggal.charAt(0) == ' ' ? tanggal.replaceFirst("\\s+","") : tanggal;
 						
-						if (getMinutesTimeDiff(time) > 0) {
+						if (!TimeUtil.isTimePassed(DateUtil.parseDateFormat("dd-MM-yyyy HH:mm", tanggal).toString())) {
 							log.info("Class time incoming");
 							
 							if (tr.contains("open=booking-detail&id=")) {
@@ -300,9 +299,12 @@ public class JjfService {
 		
 		if (woName != null && !woName.equals("")) {
 			if (classMap != null && classMap.size() > 0) {
-				value = classMap.get(woName);
-				
-				log.info("Using time from classmap");
+				if (classMap.containsKey(woName)) {
+					value = classMap.get(woName);
+					log.info("Using time from classmap");
+				} else {
+					log.info("Using default time");
+				}
 			} else {
 				log.info("Using default time");
 			}
@@ -310,28 +312,8 @@ public class JjfService {
 			log.info("Using default time");
 		}
 		
+		value = DateUtil.minutesToDateTime(value);
+		
 		return value;
-	}
-	
-	private long getMinutesTimeDiff(String timeCompare) {
-		String time = getCurrentTime();
-		long timeDiff = Duration.between(LocalTime.parse(time), LocalTime.parse(timeCompare)).toMinutes();
-		return timeDiff;
-	}
-	
-	private int getCurrentHour() {
-		return LocalDateTime.now().getHour();
-	}
-	
-	private int getCurrentMinute() {
-		return LocalDateTime.now().getMinute();
-	}
-	
-	private String getCurrentTime() {
-		return checkTimeLenth(getCurrentHour()) + ":" + checkTimeLenth(getCurrentMinute());
-	}
-	
-	private String checkTimeLenth(int time) {
-		return time < 10 ? "0" + time : String.valueOf(time);
-	}
+	}	
 }
