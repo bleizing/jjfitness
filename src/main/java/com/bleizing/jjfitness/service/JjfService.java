@@ -52,6 +52,7 @@ public class JjfService {
 	private Map<String, String> classMap;
 	
 	public void warJjf(WarJjfRequest request) {
+		log.info("Start warJjf {}", request);
 		initClassMap();
 		
 		username = request.getUsername();
@@ -290,12 +291,13 @@ public class JjfService {
 	
 	private void initClassMap() {
 		classMap = new HashMap<>();
-		classMap.put("muaythai", "12:00");
+		classMap.put("muaythai", "10:45");
 		classMap.put("spinning", "21:00");
 	}
 	
 	private String getClassMap(String woName) {
-		String value = "21:00";
+		log.info("getClassMap for = " + woName);
+		String value = "08:00";
 		
 		if (woName != null && !woName.equals("")) {
 			if (classMap != null && classMap.size() > 0) {
@@ -303,17 +305,17 @@ public class JjfService {
 					value = classMap.get(woName);
 					log.info("Using time from classmap");
 				} else {
-					log.info("Using default time");
+					log.info("Classmap not contains wo name. Using default time");
 				}
 			} else {
-				log.info("Using default time");
+				log.info("Classmap undefined. Using default time");
 			}
 		} else {
-			log.info("Using default time");
+			log.info("WO name is null. Using default time");
 		}
 		
 		value = DateUtil.minutesToDateTime(value);
 		
 		return value;
-	}	
+	}
 }

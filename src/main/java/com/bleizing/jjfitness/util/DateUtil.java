@@ -2,11 +2,15 @@ package com.bleizing.jjfitness.util;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public class DateUtil {
+	private static ZoneId getZoneId() {
+		return ZoneId.of("Asia/Jakarta");
+	}
 	public static LocalDateTime getCurrentDateTime() {
-		return LocalDateTime.now();
+		return LocalDateTime.now(getZoneId());
 	}
 
 	public static LocalDateTime parseDateFormat(String pattern, String date) {
@@ -15,7 +19,7 @@ public class DateUtil {
 	}
 	
 	public static LocalDate getCurrentDate() {
-		return LocalDate.now();
+		return LocalDate.now(getZoneId());
 	}
 	
 	public static String minutesToDateTime(String minutes) {
