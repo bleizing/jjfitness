@@ -5,6 +5,7 @@ import java.text.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +20,7 @@ public class WarController {
 	private JjfService jjfService;
 	
 	@PostMapping("/war")
-	public void war(WarJjfRequest request) {
+	public void war(@RequestBody WarJjfRequest request) {
 		jjfService.warJjf(request);
 	}
 	
@@ -33,6 +34,8 @@ public class WarController {
 		jjfService.warJjf(WarJjfRequest.builder()
 				.username("dimasz_97@gmail.com")
 				.password("1693484551")
+//				.username("aprilia.suryani95@yahoo.com")
+//				.password("April!06")
 				.woName("muaythai")
 				.build());
 	}
